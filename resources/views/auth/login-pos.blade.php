@@ -144,8 +144,8 @@
         <div class="brand-subtitle">Point of Sales</div>
 
         <!-- Judul sesuai Mockup -->
-        <div class="welcome-title">Mulai Shift</div>
-        <div class="welcome-subtitle">Buka mesin kasir untuk mulai jualan</div>
+        <div class="welcome-title">Welcome</div>
+        <div class="welcome-subtitle">Login Kasir POS — Silakan login untuk melanjutkan</div>
 
         <!-- Form Login tetep diarahkan ke auth controller yang sama -->
         <form action="{{ route('login.admin.post') }}" method="POST">
@@ -181,7 +181,7 @@
             </div>
 
             <!-- Tombol Submit sesuai Mockup -->
-            <button type="submit" class="btn-login">Buka Mesin Kasir</button>
+            <button type="submit" class="btn-login">Masuk</button>
         </form>
     </div>
 

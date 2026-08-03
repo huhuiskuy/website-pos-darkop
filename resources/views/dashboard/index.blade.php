@@ -263,7 +263,7 @@
 
     <!-- Header & Welcome -->
     <div>
-        <h1 class="fw-bold mb-1" style="color: #2b2d42; font-size: 32px;">Selamat Datang, Admin</h1>
+        <h1 class="fw-bold mb-1" style="color: #2b2d42; font-size: 32px;">Selamat Datang, {{ auth()->user()->name ?? 'Admin' }}</h1>
         <p class="text-muted" style="font-size: 15px;">Berikut ringkasan operasional kedai hari ini</p>
     </div>
     

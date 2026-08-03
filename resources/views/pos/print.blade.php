@@ -60,8 +60,7 @@
     <!-- HEADER STRUK -->
     <div class="header text-center mb-3">
         <h1>DariKopi</h1>
-        <p>Jl. Contoh Kedai Kopi No. 123</p>
-        <p>Telp: 0812-3456-7890</p>
+        <p>Jalan Mindi No.63 RT 003 RW 007, Koja, Jakarta Utara, Jakarta, Indonesia</p>
     </div>
 
     <div class="divider"></div>
@@ -125,7 +124,8 @@
     <!-- FOOTER -->
     <div class="text-center mt-2">
         <p class="mb-1 fw-bold">Terima Kasih!</p>
-        <p>Silakan berkunjung kembali</p>
+        <p class="mb-1">Silakan berkunjung kembali</p>
+        <p class="fw-bold">#Darikopihariankamu</p>
     </div>
 
 </body>
