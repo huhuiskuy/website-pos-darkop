@@ -20,7 +20,7 @@ use App\Http\Controllers\PosController;
 
 // Jalur utama fallback (hanya untuk berjaga-jaga jika IP diakses langsung)
 Route::get('/', function (Request $request) {
-    if (str_contains($request->getHost(), 'darkopos.com')) {
+    if (str_contains($request->getHost(), 'darkopos.alwaysdata.net')) {
         return redirect()->route('pos.index');
     }
     return redirect()->route('dashboard.index');
@@ -28,7 +28,7 @@ Route::get('/', function (Request $request) {
 
 // Route pancingan bawaan auth Laravel (redirect otomatis saat belum login)
 Route::get('/login', function (Request $request) {
-    if (str_contains($request->getHost(), 'darkopos.com')) {
+    if (str_contains($request->getHost(), 'darkopos.alwaysdata.net')) {
         return redirect()->route('login.pos');
     }
     return redirect()->route('login.admin'); 
@@ -40,10 +40,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| DOMAIN: KASIR / POS (darkopos.com)
+| DOMAIN: KASIR / POS (darkopos.alwaysdata.net)
 |--------------------------------------------------------------------------
 */
-Route::domain('darkopos.com')->group(function () {
+Route::domain('darkopos.alwaysdata.net')->group(function () {
     
     Route::get('/', function () {
         return redirect()->route('pos.index');
@@ -77,10 +77,10 @@ Route::domain('darkopos.com')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| DOMAIN: BACK OFFICE (backofficedarkop.com)
+| DOMAIN: BACK OFFICE (backofficedarkop.alwaysdata.net)
 |--------------------------------------------------------------------------
 */
-Route::domain('backofficedarkop.com')->group(function () {
+Route::domain('backofficedarkop.alwaysdata.net')->group(function () {
 
     Route::get('/', function () {
         return redirect()->route('dashboard.index');
