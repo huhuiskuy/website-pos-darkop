@@ -17,6 +17,16 @@ use App\Http\Controllers\PosController;
 |--------------------------------------------------------------------------
 */
 
+// Route pancingan bawaan auth Laravel (Wajib bernama 'login')
+Route::get('/login', function (Request $request) {
+    // Kalau dia nyoba masuk ke area admin, lempar ke form login admin
+    if ($request->is('admin') || $request->is('admin/*')) {
+        return redirect()->route('login.admin');
+    }
+    // Kalau bukan, lempar ke form login kasir
+    return redirect()->route('login.pos');
+})->name('login');
+
 // Logout bisa diakses dari mana saja
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -56,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| AREA BACK OFFICE ADMIN (Pakai Prefix /admin)
+| AREA BACK OFFICE ADMI N (Pakai Prefix /admin)
 | URL: darkopos.alwaysdata.net/admin
 |--------------------------------------------------------------------------
 */
