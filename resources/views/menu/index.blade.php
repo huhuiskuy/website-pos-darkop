@@ -708,7 +708,7 @@
 
     function hapusKategori(id, nama) {
         document.getElementById('nama_kat_del').innerText = nama;
-        document.getElementById('formHapusKategori').action = `/menu/kategori/${id}`; 
+        document.getElementById('formHapusKategori').action = `/admin/menu/kategori/${id}`; 
         queuedModal = 'modalHapusKategori'; 
         let modKat = bootstrap.Modal.getInstance(document.getElementById('modalKategori'));
         if(modKat) modKat.hide();
@@ -740,7 +740,7 @@
         let item = JSON.parse(atob(btnElement.getAttribute('data-menu')));
         sessionStorage.setItem('editMenuData', JSON.stringify(item));
         
-        document.getElementById('formEditMenu').action = `/menu/${item.id}`;
+        document.getElementById('formEditMenu').action = `/admin/menu/${item.id}`;
         document.getElementById('edit_nama').value = item.nama_menu;
         document.getElementById('edit_kategori').value = item.kategori_menu_id || "";
         
@@ -772,7 +772,7 @@
         let nama = btnElement.getAttribute('data-nama');
         
         document.getElementById('hapus_item_nama').innerText = nama;
-        document.getElementById('formHapusItem').action = `/menu/${id}`;
+        document.getElementById('formHapusItem').action = `/admin/menu/${id}`;
         new bootstrap.Modal(document.getElementById('modalHapus')).show();
     }
 
@@ -813,7 +813,7 @@
             let savedData = sessionStorage.getItem('editMenuData');
             if (savedData) {
                 let item = JSON.parse(savedData);
-                document.getElementById('formEditMenu').action = `/menu/${item.id}`;
+                document.getElementById('formEditMenu').action = `/admin/menu/${item.id}`;
                 document.getElementById('edit_nama').value = item.nama_menu;
                 document.getElementById('edit_kategori').value = item.kategori_menu_id || "";
                 
