@@ -42,9 +42,9 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         if ($request->input('source') === 'pos') {
-            return redirect('/login-pos');
+            return redirect()->route('login.pos');
         }
         
-        return redirect('/login-admin');
+        return redirect()->route('login.admin');
     }
 }
