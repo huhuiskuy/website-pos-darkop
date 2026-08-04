@@ -20,7 +20,7 @@ use App\Http\Controllers\PosController;
 
 // Jalur utama fallback (hanya untuk berjaga-jaga jika IP diakses langsung)
 Route::get('/', function (Request $request) {
-    if (str_contains($request->getHost(), 'darkopos.alwaysdata.net')) {
+    if ($request->getHost() === 'darkopos.alwaysdata.net') {
         return redirect()->route('pos.index');
     }
     return redirect()->route('dashboard.index');
@@ -28,7 +28,7 @@ Route::get('/', function (Request $request) {
 
 // Route pancingan bawaan auth Laravel (redirect otomatis saat belum login)
 Route::get('/login', function (Request $request) {
-    if (str_contains($request->getHost(), 'darkopos.alwaysdata.net')) {
+    if ($request->getHost() === 'darkopos.alwaysdata.net') {
         return redirect()->route('login.pos');
     }
     return redirect()->route('login.admin'); 
@@ -54,6 +54,9 @@ Route::domain('darkopos.alwaysdata.net')->group(function () {
         return view('auth.login-pos');
     })->name('login.pos');
 
+    // Proses data dari form login POS (Ini yang ditambahin biar bisa masuk)
+    Route::post('/login-pos', [AuthController::class, 'loginPos'])->name('login.pos.post');
+
     // Halaman Kasir (Wajib Login)
     Route::middleware(['auth'])->group(function () {
         Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
@@ -77,10 +80,10 @@ Route::domain('darkopos.alwaysdata.net')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| DOMAIN: BACK OFFICE (backofficedarkop.alwaysdata.net)
+| DOMAIN: BACK OFFICE (darkopos-bo.alwaysdata.net)
 |--------------------------------------------------------------------------
 */
-Route::domain('backofficedarkop.alwaysdata.net')->group(function () {
+Route::domain('darkopos-bo.alwaysdata.net')->group(function () {
 
     Route::get('/', function () {
         return redirect()->route('dashboard.index');
@@ -90,6 +93,8 @@ Route::domain('backofficedarkop.alwaysdata.net')->group(function () {
     Route::get('/login-admin', function () {
         return view('auth.login-admin');
     })->name('login.admin');
+    
+    // Proses data dari form login Admin
     Route::post('/login-admin', [AuthController::class, 'loginAdmin'])->name('login.admin.post');
 
     // Halaman Back Office (Wajib Login)
