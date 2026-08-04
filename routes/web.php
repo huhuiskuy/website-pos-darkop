@@ -17,13 +17,17 @@ use App\Http\Controllers\PosController;
 |--------------------------------------------------------------------------
 */
 
-// Route pancingan bawaan auth Laravel (Wajib bernama 'login')
-Route::get('/login', function (Request $request) {
-    // Kalau dia nyoba masuk ke area admin, lempar ke form login admin
-    if ($request->is('admin') || $request->is('admin/*')) {
+// Route pancingan bawaan auth Laravel
+Route::get('/login', function () {
+    // Cek rekam jejak URL tujuan awal sebelum ditendang
+    $niatAwal = session()->get('url.intended', '');
+    
+    // Kalau tujuan awalnya ada ke folder admin, lempar ke login admin
+    if (str_contains($niatAwal, '/admin')) {
         return redirect()->route('login.admin');
     }
-    // Kalau bukan, lempar ke form login kasir
+    
+    // Kalau bukan, defaultnya lempar ke login kasir POS
     return redirect()->route('login.pos');
 })->name('login');
 
