@@ -170,9 +170,11 @@ public function batalkanTransaksi(Request $request, $id)
         $kategoris = KategoriBahan::all(); 
 
         // --- TAMBAHAN LOGIKA LOCK & EDIT ---
-        $opnameHariIni = \App\Models\StokOpname::where('tanggal', $date)->first();
-        $picPagi = $opnameHariIni->penginput_pagi ?? '';
-        $picSore = $opnameHariIni->penginput_sore ?? '';
+        $opnamePagi = \App\Models\StokOpname::where('tanggal', $date)->whereNotNull('penginput_pagi')->first();
+        $opnameSore = \App\Models\StokOpname::where('tanggal', $date)->whereNotNull('penginput_sore')->first();
+        
+        $picPagi = $opnamePagi ? $opnamePagi->penginput_pagi : '';
+        $picSore = $opnameSore ? $opnameSore->penginput_sore : '';
 
         // Cek apakah kasir lagi mencet tombol "Edit Pagi"
         $editMode = $request->query('edit'); 

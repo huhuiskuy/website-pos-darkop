@@ -252,9 +252,11 @@ class LaporanController extends Controller
         $items = $query->paginate(15)->appends($request->query());
         $kategoris = \App\Models\KategoriBahan::all(); 
 
-        $opnameHariIni = StokOpname::where('tanggal', $date)->first();
-        $picPagi = $opnameHariIni->penginput_pagi ?? '-';
-        $picSore = $opnameHariIni->penginput_sore ?? '-';
+        $opnamePagi = StokOpname::where('tanggal', $date)->whereNotNull('penginput_pagi')->first();
+        $opnameSore = StokOpname::where('tanggal', $date)->whereNotNull('penginput_sore')->first();
+        
+        $picPagi = $opnamePagi ? $opnamePagi->penginput_pagi : '-';
+        $picSore = $opnameSore ? $opnameSore->penginput_sore : '-';
 
         return view('laporan.opname', compact('items', 'kategoris', 'date', 'picPagi', 'picSore'));
     }
