@@ -68,9 +68,9 @@
     .search-wrapper:focus-within svg { color: #8a5a36; }
 
     /* --- Custom Dropdown Filters --- */
-    .filter-box {
+    .filter-box { 
         background: white; border-radius: 12px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #EBE3DB; color: #64748b; font-size: 13px; cursor: pointer; transition: 0.2s; height: 42px; margin: 0;
-    }
+     min-width: 160px; }
     .filter-box:hover { border-color: #8a5a36; }
     .dropdown-menu-custom {
         border-radius: 12px; border: 1px solid #EBE3DB; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 8px;
@@ -85,6 +85,7 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
+        .filter-group-container { width: 100%; flex: 1; }
         .search-wrapper { width: 100%; margin-bottom: 12px; height: 42px;}
         .filter-status-container { flex: 1; }
         #formFilterBahanBaku { flex-direction: column; align-items: stretch !important; gap: 8px !important; height: auto !important;}
@@ -113,9 +114,9 @@
             <input type="text" name="search" placeholder="Cari Nama Item..." value="{{ $search }}" onchange="this.form.submit()" autocomplete="off" style="padding: 0; padding-left: 12px;">
         </div>
 
-        <div class="d-flex gap-2 w-100 flex-md-nowrap" style="max-width: 100%; flex: 1;">
+        <div class="d-flex gap-2 flex-md-nowrap filter-group-container" style="max-width: 100%;">
             <!-- Custom Dropdown Kategori -->
-            <div class="position-relative filter-status-container w-100" id="customDropdownKategori" style="height: 100%;">
+            <div class="position-relative filter-status-container" id="customDropdownKategori" style="height: 100%;">
                 <input type="hidden" name="kategori" id="kategoriInput" value="{{ $kategori_filter }}">
                 <button type="button" class="filter-box w-100 m-0" onclick="toggleDropdown('dropdownMenuKategori')">
                     <span class="fw-medium text-truncate" id="labelKategori">
@@ -133,7 +134,7 @@
             </div>
 
             <!-- Custom Dropdown Status -->
-            <div class="position-relative filter-status-container w-100" id="customDropdownStatus" style="height: 100%;">
+            <div class="position-relative filter-status-container" id="customDropdownStatus" style="height: 100%;">
                 <input type="hidden" name="status" id="statusInput" value="{{ $status_filter }}">
                 <button type="button" class="filter-box w-100 m-0" onclick="toggleDropdown('dropdownMenuStatus')">
                     <span class="fw-medium text-truncate" id="labelStatus">
