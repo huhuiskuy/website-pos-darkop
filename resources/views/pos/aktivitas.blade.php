@@ -1,425 +1,262 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Aktivitas - DariKopi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-brown: #7A4E33;
-            --bg-body: #F5EFE9;
-            --bg-sidebar: #FFFFFF;
-            --text-dark: #382A22;
-            --text-gray: #756D67;
-            --border-color: #EAE3DB;
-            --active-bg: #F4EBE1;
-        }
+@extends('layouts.pos')
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            margin: 0;
-            overflow: hidden;
-        }
+@section('title', 'Aktivitas - DariKopi')
 
-        /* ================= SIDEBAR (Konsisten) ================= */
-        .sidebar {
-            width: 250px;
-            background-color: var(--bg-sidebar);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            z-index: 100;
-        }
-        .brand { margin-bottom: 0; }
-        .brand-name {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary-brown);
-            line-height: 1;
-            letter-spacing: -0.5px;
-        }
-        .brand-sub {
-            font-size: 12px;
-            color: var(--text-gray);
-            margin-top: 6px;
-            font-weight: 500;
-        }
-        .divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 16px 0;
-            width: 100%;
-        }
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: var(--text-gray);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            gap: 16px;
-            position: relative;
-        }
-        .nav-item.active {
-            background-color: var(--active-bg);
-            color: var(--primary-brown);
-            padding-left: 24px;
-        }
-        .nav-item.active::before {
-            content: "";
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 18px;
-            width: 3px;
-            background-color: var(--primary-brown);
-            border-radius: 4px;
-        }
-        .nav-item:hover:not(.active) {
-            background-color: #FAFAFA;
-            color: var(--primary-brown);
-        }
-        .sidebar-bottom {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .btn-logout {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            color: var(--primary-brown);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            background: white;
-            transition: all 0.2s ease;
-        }
-        .btn-logout:hover {
-            background: #FAFAFA;
-            border-color: var(--primary-brown);
-        }
+@push('styles')
+<style>
+/* ================= MAIN CONTENT (Aktivitas) ================= */
+.main-wrapper {
+    height: calc(100vh - 70px);
+}
 
-        /* ================= NAVBAR TOP (Konsisten) ================= */
-        .navbar-top {
-            position: fixed;
-            top: 0;
-            left: 250px;
-            right: 0;
-            height: 70px;
-            background-color: var(--bg-sidebar);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            z-index: 99;
-        }
-        .navbar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0;
-        }
-        .time-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.content-area::-webkit-scrollbar { display: none; }
 
-        /* ================= MAIN CONTENT (Aktivitas) ================= */
-        .main-wrapper {
-            margin-left: 250px;
-            margin-top: 70px;
-            height: calc(100vh - 70px);
-            display: flex;
-            padding: 32px;
-            gap: 24px;
-        }
-        
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-        .content-area::-webkit-scrollbar { display: none; }
+.page-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.page-header p {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 24px;
+}
 
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .page-header p {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 24px;
-        }
+/* --- FIlter Controls --- */
+.filter-controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.filter-box {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    color: var(--text-gray);
+    font-size: 13px;
+}
+.filter-search {
+    flex: 1;
+    max-width: 350px;
+}
+.filter-search input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+.filter-date, .filter-status {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-dark);
+    justify-content: space-between;
+}
+.filter-date svg, .filter-status svg {
+    color: var(--text-dark);
+}
 
-        /* --- FIlter Controls --- */
-        .filter-controls {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .filter-box {
-            background: white;
-            border-radius: 12px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            color: var(--text-gray);
-            font-size: 13px;
-        }
-        .filter-search {
-            flex: 1;
-            max-width: 350px;
-        }
-        .filter-search input {
-            border: none;
-            outline: none;
-            width: 100%;
-            font-size: 13px;
-            color: var(--text-dark);
-        }
-        .filter-date, .filter-status {
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-dark);
-            justify-content: space-between;
-        }
-        .filter-date svg, .filter-status svg {
-            color: var(--text-dark);
-        }
+/* --- List Transaksi --- */
+.trx-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 40px;
+}
+.trx-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+.trx-card:hover {
+    border-color: var(--primary-brown);
+    transform: translateY(-2px);
+}
 
-        /* --- List Transaksi --- */
-        .trx-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding-bottom: 40px;
-        }
-        .trx-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-        }
-        .trx-card:hover {
-            border-color: var(--primary-brown);
-            transform: translateY(-2px);
-        }
-        
-        .trx-left {
-            width: 25%;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .trx-id {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-dark);
-        }
-        .trx-price {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--primary-brown);
-        }
+.trx-left {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.trx-id {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+.trx-price {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--primary-brown);
+}
 
-        .trx-center {
-            flex: 1;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
+.trx-center {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
 
-        .trx-right {
-            width: 25%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 20px;
-        }
-        .trx-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
-        }
-        .trx-time {
-            font-size: 11px;
-            color: var(--text-gray);
-        }
-        .badge-status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .status-selesai {
-            background-color: #ECFDF3;
-            color: #12B76A;
-        }
-        .status-batal {
-            background-color: #FEF3F2;
-            color: #F04438;
-        }
-        .trx-arrow {
-            color: #D0D5DD;
-        }
+.trx-right {
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+.trx-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+.trx-time {
+    font-size: 11px;
+    color: var(--text-gray);
+}
+.badge-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.status-selesai {
+    background-color: #ECFDF3;
+    color: #12B76A;
+}
+.status-batal {
+    background-color: #FEF3F2;
+    color: #F04438;
+}
+.trx-arrow {
+    color: #D0D5DD;
+}
 
-        /* ================= PAGINATION ================= */
-        .pagination .page-link:focus { 
-            box-shadow: 0 0 0 0.25rem rgba(138, 90, 54, 0.25); 
-            color: #8a5a36; 
-        }
-        .pagination .page-link:hover { 
-            color: #8a5a36; 
-            background-color: #FCF9F6; 
-            border-color: #EBE3DB; 
-        }
-        .pagination .page-item .page-link { 
-            border: 1px solid #EBE3DB; 
-            color: #94a3b8; 
-            border-radius: 8px; 
-            margin: 0 4px; 
-            font-size: 13px; 
-            font-weight: 500; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 34px;
-            height: 34px;
-            padding: 0 10px;
-            background-color: white;
-        }
-        .pagination .page-item.active .page-link { 
-            background-color: #8a5a36; 
-            border-color: #8a5a36; 
-            color: white; 
-        }
-        .pagination .page-item.disabled .page-link {
-            background-color: #F1F5F9;
-            border-color: #EBE3DB;
-            color: #94a3b8;
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-        .pagination .page-link svg {
-            width: 14px; 
-            height: 14px;
-        }
-        .pagination .page-item:last-child:not(.disabled) .page-link {
-            color: #8a5a36;
-        }
+/* ================= PAGINATION ================= */
+.pagination .page-link:focus { 
+    box-shadow: 0 0 0 0.25rem rgba(138, 90, 54, 0.25); 
+    color: var(--primary-brown); 
+}
+.pagination .page-link:hover { 
+    color: var(--primary-brown); 
+    background-color: #FCF9F6; 
+    border-color: #EBE3DB; 
+}
+.pagination .page-item .page-link { 
+    border: 1px solid #EBE3DB; 
+    color: #94a3b8; 
+    border-radius: 8px; 
+    margin: 0 4px; 
+    font-size: 13px; 
+    font-weight: 500; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    background-color: white;
+}
+.pagination .page-item.active .page-link { 
+    background-color: var(--primary-brown); 
+    border-color: var(--primary-brown); 
+    color: white; 
+}
+.pagination .page-item.disabled .page-link {
+    background-color: #F1F5F9;
+    border-color: #EBE3DB;
+    color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.pagination .page-link svg {
+    width: 14px; 
+    height: 14px;
+}
+.pagination .page-item:last-child:not(.disabled) .page-link {
+    color: var(--primary-brown);
+}
 
-        /* ================= HILANGKAN SCROLLBAR MODAL ================= */
-        .modal::-webkit-scrollbar {
-            display: none; /* Sembunyikan untuk Chrome, Safari, Edge */
-        }
-        .modal {
-            -ms-overflow-style: none; /* Sembunyikan untuk IE dan Edge lawas */
-            scrollbar-width: none; /* Sembunyikan untuk Firefox */
-        }
-    </style>
-</head>
-<body>
+/* ================= HILANGKAN SCROLLBAR MODAL ================= */
+.modal::-webkit-scrollbar {
+    display: none;
+}
+.modal {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
-    <!-- ================= SIDEBAR ================= -->
-    <div class="sidebar">
-        <div class="brand">
-            <div class="brand-name">DariKopi</div>
-            <div class="brand-sub">Point of Sales</div>
-        </div>
-        
-        <div class="divider"></div>
-        
-        <ul class="nav-menu">
-            <a href="{{ url('/pos') }}" class="nav-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                Point of Sale
-            </a>
-            <a href="{{ route('pos.aktivitas') }}" class="nav-item active">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Aktivitas
-            </a>
-            <a href="{{ route('pos.opname') }}" class="nav-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                Opname
-            </a>
-        </ul>
+/* CSS Tambahan Khusus Filter */
+.input-aesthetic-filter {
+    border: none; outline: none; background: transparent;
+    font-family: 'Poppins', sans-serif; font-size: 13px;
+    font-weight: 500; color: var(--text-dark); width: 100%;
+}
+.filter-date-btn {
+    cursor: pointer; color: var(--text-dark); transition: 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.filter-date-btn:hover { color: var(--primary-brown); }
 
-        <div class="sidebar-bottom">
-            <div class="divider"></div>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-                <input type="hidden" name="source" value="pos">
-            </form>
-            <a href="#" class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Keluar
-            </a>
-        </div>
-    </div>
+/* Custom Dropdown Status */
+.dropdown-menu-custom {
+    border-radius: 12px; border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 8px;
+}
+.dropdown-item-custom {
+    border-radius: 8px; font-size: 13px; font-weight: 500;
+    color: var(--text-gray); padding: 8px 12px; transition: 0.2s;
+}
+.dropdown-item-custom:hover, .dropdown-item-custom.active {
+    background-color: var(--active-bg); color: var(--primary-brown);
+}
 
-    <!-- ================= NAVBAR TOP ================= -->
-    <div class="navbar-top">
-        <h1 class="navbar-title">Aktivitas</h1>
-        <div class="time-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span id="realtime-clock">08:15 WIB</span>
-        </div>
-    </div>
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+    }
+    .filter-search, .filter-date, .filter-status-container {
+        max-width: 100%;
+        width: 100%;
+    }
+    .trx-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .trx-left, .trx-center, .trx-right {
+        width: 100%;
+        text-align: left;
+    }
+    .trx-right {
+        justify-content: space-between;
+    }
+}
+</style>
+@endpush
 
-    <!-- ================= MAIN CONTENT ================= -->
-    <div class="main-wrapper">
-        <div class="content-area">
-            <div class="page-header">
+@section('content')
+<div class="main-wrapper">
+    <div class="content-area">
+<div class="page-header">
                 <h1>Aktivitas Pesanan</h1>
                 <p>Lihat seluruh histori transaksi</p>
             </div>
@@ -725,7 +562,12 @@
 <!-- Script Bootstrap 5 (Wajib Paling Atas) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+    
+</div>
+</div>
+
+@push('scripts')
+<script>
         let activeDetailModalId = null; // Menyimpan ID modal rincian yang lagi aktif
         let queuedModalPOS = null;      // Menyimpan antrean modal yang mau dibuka
 
@@ -917,3 +759,5 @@
     </script>
 </body>
 </html>
+@endpush
+@endsection

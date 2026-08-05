@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Opname - DariKopi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+@extends('layouts.backoffice')
+
+@section('title', 'Laporan Opname - DariKopi')
+@section('page_title', 'Laporan')
+
+@push('styles')
     <!-- jQuery, Moment.js, & Daterangepicker -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -16,43 +11,14 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <style>
-        body { background-color: #F9F6F0; font-family: 'Poppins', sans-serif; color: #2b2d42; }
-        
-        /* ================= SIDEBAR ================= */
-        .sidebar { width: 240px; height: 100vh; background-color: #ffffff; border-right: 1px solid #EBE3DB; position: fixed; display: flex; flex-direction: column; padding: 24px 0; z-index: 100;}
-        .sidebar-brand { font-size: 24px; font-weight: 700; color: #8a5a36; padding: 0 24px; line-height: 1.2;}
-        .sidebar-subtitle { font-size: 11px; color: #94a3b8; padding: 0 24px; margin-bottom: 24px; }
-        .sidebar-divider { border-top: 1px solid #EBE3DB; margin: 0 24px 24px 24px; }
-        
-        .nav-menu { display: flex; flex-direction: column; gap: 16px; padding: 0 12px; }
-        .nav-menu a { display: flex; align-items: center; padding: 12px; color: #64748b; text-decoration: none; font-size: 15px; font-weight: 500; border-radius: 12px; transition: all 0.2s ease; position: relative; margin: 0 12px; }
-        .nav-menu a svg { flex-shrink: 0; margin-right: 12px; }
-        .nav-menu a:hover { color: #8a5a36; background-color: #faf7f5; }
-        
-        .nav-menu .active { background-color: #EBE1D7; color: #8a5a36; font-weight: 600; padding-left: 30px; }
-        .nav-menu .active::before { content: ""; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 4px; height: 24px; background-color: #8a5a36; border-radius: 10px; }
-
-        .user-card { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 16px; }
-        .user-name { font-size: 13px; font-weight: 700; color: #2b2d42; margin-bottom: 2px;}
-        .user-role { font-size: 11px; color: #94a3b8; }
-        
-        .btn-logout { display: flex; justify-content: left; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 12px; background: transparent; border: 1px solid #E8DDD2; color: #8a5a36; font-weight: 600; font-size: 15px; text-decoration: none; transition: 0.2s; }
-        .btn-logout:hover { background: #faf7f5; border-color: #8a5a36; color: #8a5a36; }
-        
-        /* ================= MAIN CONTENT ================= */
-        .main-content { margin-left: 240px; padding: 24px 32px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; padding: 20px 32px; margin: -24px -32px 32px -32px; border-bottom: 1px solid #EBE3DB; position: sticky; top: 0; z-index: 50; }
-        .topbar-title { font-size: 24px; font-weight: 700; color: #262626; margin: 0; }
-        .clock-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background-color: #ffffff; border: 1px solid #E8DDD2; border-radius: 12px; color: #262626; font-weight: 500; font-size: 14px; }
-        
         /* ================= LAPORAN COMPONENTS ================= */
-        .top-tabs { border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 24px; padding-bottom: 0; margin-top: 32px;}
+        .top-tabs { border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 24px; padding-bottom: 0; margin-top: 32px; overflow-x: auto; white-space: nowrap;}
         .top-tabs a { color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 14px; padding-bottom: 12px; position: relative; transition: 0.2s;}
         .top-tabs a:hover { color: #8a5a36; }
         .top-tabs a.active { color: #8a5a36; font-weight: 600; }
         .top-tabs a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background-color: #8a5a36; }
 
-        .laporan-card { background: #ffffff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #EBE3DB; }
+        .laporan-card { background: #ffffff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #EBE3DB; overflow-x: auto;}
 
         /* ================= FILTERS & BADGES ================= */
         .search-box { background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; padding: 8px 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; height: 42px;}
@@ -74,23 +40,20 @@
             background-color: #faf7f5; color: #8a5a36;
         }
 
-        .form-select-custom { background-color: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; padding: 8px 36px 8px 16px; font-size: 14px; font-weight: 500; color: #2b2d42; appearance: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02); height: 42px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b2d42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;}
-        .form-select-custom:focus { outline: none; border-color: #8a5a36; }
-
-        .date-filter-group { display: inline-flex; align-items: center; background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; height: 42px;}
+        .date-filter-group { display: inline-flex; align-items: center; background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; height: 42px; max-width: max-content;}
         .btn-date-custom { background: transparent; border: none; color: #2b2d42; display: flex; align-items: center; justify-content: center; transition: 0.2s; border-radius: 0; padding: 0 12px;}
         .btn-date-custom:hover { background: #faf7f5; color: #8a5a36; }
         .btn-date-center { font-weight: 600; font-size: 14px; padding: 0 16px;}
 
-        .total-item-badge { background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; font-size: 14px; font-weight: 600; color: #2b2d42; display: flex; align-items: center; padding: 0 16px; height: 42px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .total-item-badge { background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; font-size: 14px; font-weight: 600; color: #2b2d42; display: flex; align-items: center; padding: 0 16px; height: 42px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); white-space: nowrap;}
         
-        .btn-export { background-color: #8a5a36; color: white; display: flex; align-items: center; gap: 8px; font-weight: 600; border-radius: 12px; padding: 0 24px; border: none; font-size: 14px; transition: 0.2s; height: 42px;}
+        .btn-export { background-color: #8a5a36; color: white; display: flex; align-items: center; gap: 8px; font-weight: 600; border-radius: 12px; padding: 0 24px; border: none; font-size: 14px; transition: 0.2s; height: 42px; white-space: nowrap;}
         .btn-export:hover { background-color: #734a2c; color: white; }
 
         .opname-info-badge { background: #ffffff; border: 1px solid #EBE3DB; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #2b2d42; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
 
         /* ================= PAGINATION ================= */
-        .pagination-container { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #f1f5f9; }
+        .pagination-container { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #f1f5f9; flex-wrap: wrap; gap: 12px;}
         .pagination-text { font-size: 13px; color: #64748b; font-weight: 500; }
         .pagination-btns { display: flex; gap: 6px; }
         .page-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #EBE3DB; background: #ffffff; color: #2b2d42; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.2s; }
@@ -108,65 +71,39 @@
         .daterangepicker td.active { background-color: #8a5a36 !important; color: #ffffff !important; border-radius: 6px !important; box-shadow: 0 2px 6px rgba(138, 90, 54, 0.3) !important; }
         .daterangepicker .applyBtn { background: #8a5a36 !important; border: none !important; color: white !important; font-weight: 600 !important; border-radius: 8px !important; padding: 8px 24px !important; }
         .daterangepicker .cancelBtn { background: transparent !important; border: 1px solid #EBE3DB !important; color: #64748b !important; font-weight: 600 !important; border-radius: 8px !important; padding: 8px 20px !important; }
+
+        @media (max-width: 768px) {
+            .laporan-card { padding: 16px; }
+            .search-box { width: 100% !important; margin-bottom: 8px; }
+            #formFilterOpname { flex-direction: column; align-items: stretch !important;}
+            .date-filter-group { max-width: 100%; margin-bottom: 8px; justify-content: center; width: 100%;}
+            .filter-status-container { min-width: auto !important; width: 100%; margin-bottom: 8px;}
+            .btn-export { justify-content: center; width: 100%; margin-top: 8px;}
+            .total-item-badge { width: 100%; justify-content: center;}
+            .d-flex.gap-3.align-items-stretch { flex-direction: column; gap: 0 !important;}
+            .d-flex.gap-3.align-items-center { flex-direction: column; gap: 0 !important;}
+            
+            .opname-info-badge { width: 100%; justify-content: center; }
+            .d-flex.gap-3.mb-4 { flex-direction: column; gap: 8px !important;}
+        }
     </style>
-</head>
-<body>
+@endpush
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <div>
-        <div class="sidebar-brand">DariKopi</div>
-        <div class="sidebar-subtitle">Back Office</div>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="nav-menu">
-        <a href="{{ route('dashboard.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 17.5V10.8333C12.5 10.6123 12.4122 10.4004 12.2559 10.2441C12.0996 10.0878 11.8877 9.99999 11.6667 9.99999H8.33333C8.11232 9.99999 7.90036 10.0878 7.74408 10.2441C7.5878 10.4004 7.5 10.6123 7.5 10.8333V17.5M2.5 8.33333C2.49994 8.09088 2.55278 7.85135 2.65482 7.63142C2.75687 7.4115 2.90566 7.21649 3.09083 7.05999L8.92417 2.05999C9.22499 1.80575 9.60613 1.66626 10 1.66626C10.3939 1.66626 10.775 1.80575 11.0758 2.05999L16.9092 7.05999C17.0943 7.21649 17.2431 7.4115 17.3452 7.63142C17.4472 7.85135 17.5001 8.09088 17.5 8.33333V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V8.33333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard</a>
-        <a href="{{ route('menu.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 4.99992L16.6667 16.6666M9.99999 4.99992V16.6666M6.66666 6.66659V16.6666M3.33333 3.33325V16.6666" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Menu</a>
-        <a href="{{ route('bahan-baku.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 18.3334V10.0001M10 10.0001L2.74167 5.83341M10 10.0001L17.2583 5.83341M6.25 3.55841L13.75 7.85008M9.16667 18.1084C9.42003 18.2547 9.70744 18.3317 10 18.3317C10.2926 18.3317 10.58 18.2547 10.8333 18.1084L16.6667 14.7751C16.9198 14.6289 17.13 14.4188 17.2763 14.1658C17.4225 13.9127 17.4997 13.6257 17.5 13.3334V6.66675C17.4997 6.37448 17.4225 6.08742 17.2763 5.83438C17.13 5.58134 16.9198 5.37122 16.6667 5.22508L10.8333 1.89175C10.58 1.74547 10.2926 1.66846 10 1.66846C9.70744 1.66846 9.42003 1.74547 9.16667 1.89175L3.33333 5.22508C3.08022 5.37122 2.86998 5.58134 2.72372 5.83438C2.57745 6.08742 2.5003 6.37448 2.5 6.66675V13.3334C2.5003 13.6257 2.57745 13.9127 2.72372 14.1658C2.86998 14.4188 3.08022 14.6289 3.33333 14.7751L9.16667 18.1084Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Bahan Baku</a>
-        <a href="{{ route('laporan.index') }}" class="active"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5M5.83333 13.3333H12.5M5.83333 9.16667H15.8333M5.83333 5H8.33333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Laporan</a>
-        <a href="{{ route('akun.index') }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Akun</a>
-    </div>
-    <div class="mt-auto px-4">
-        <!-- Role diganti jadi Owner sesuai mockup -->
-        <div class="user-card"><div class="user-name">{{ auth()->user()->name }}</div></div>
-        <div style="border-top: 1px solid #EBE3DB; margin: 0 8px 16px 8px;"></div>
-        <!-- TOMBOL LOGOUT BARU -->
-        <a href="#" class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 5.83333L17.5 10L13.3333 14.1667M17.5 10H7.5M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Keluar
-        </a>
-
-        <!-- Form tersembunyi buat eksekusi POST Logout -->
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content">
-    <div class="topbar">
-        <h2 class="topbar-title">Laporan</h2>
-        <div class="clock-badge">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8C5E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6V12L16 14" stroke="#8C5E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="realtime-clock">--:-- WIB</span>
-        </div>
-    </div>
-
+@section('content')
     <!-- Header -->
     <div>
         <h1 class="fw-bold mb-1" style="color: #2b2d42; font-size: 32px;">Laporan</h1>
         <p class="text-muted" style="font-size: 15px;">Lihat dan ekspor seluruh laporan operasional kedai kopi</p>
     </div>
 
-    <!-- Horizontal Tabs (Shift dihapus) -->
+    <!-- Horizontal Tabs -->
     <div class="top-tabs">
         <a href="{{ route('laporan.index') }}">Penjualan</a>
         <a href="{{ route('laporan.transaksi') }}">Transaksi</a>
         <a href="{{ route('laporan.opname') }}" class="active">Opname</a>
     </div>
 
-    <!-- Filter & Action Bar (Flexbox) -->
+    <!-- Filter & Action Bar -->
     <form action="{{ route('laporan.opname') }}" method="GET" id="formFilterOpname" class="d-flex justify-content-between align-items-center mb-3">
         
         <!-- Group Kiri: Search, Kategori, Date -->
@@ -237,7 +174,7 @@
     <!-- Kartu Tabel Full Width -->
     <div class="laporan-card">
         <div class="table-responsive">
-            <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: left;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 800px;">
                 <thead>
                     <tr style="background-color: #F4EFEA; color: #64748b; font-size: 13px; font-weight: 600;">
                         <th style="padding: 16px 20px; border-radius: 8px 0 0 8px; width: 30%;">Nama Item</th>
@@ -331,23 +268,9 @@
         </div>
 
     </div>
-</div>
+@endsection
 
-<!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Auto-Update Jam -->
-<script>
-    function updateClock() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('realtime-clock').textContent = `${hours}:${minutes} WIB`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
-
+@push('scripts')
 <!-- KONFIGURASI DATERANGEPICKER (SINGLE DATE) -->
 <script>
     const formFilter = document.getElementById('formFilterOpname');
@@ -440,6 +363,4 @@
     });
 
 </script>
-
-</body>
-</html>
+@endpush

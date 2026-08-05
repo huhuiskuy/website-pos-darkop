@@ -1,506 +1,338 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Point of Sale - DariKopi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            /* Penyesuaian warna biar lebih identik dengan mockup */
-            --primary-brown: #7A4E33; /* Cokelat gelap untuk teks/icon aktif */
-            --bg-body: #F5EFE9;
-            --bg-sidebar: #FFFFFF;
-            --text-dark: #382A22;
-            --text-gray: #756D67; /* Abu-abu kecokelatan untuk menu tidak aktif */
-            --border-color: #EAE3DB;
-            --active-bg: #F4EBE1; /* Beige terang untuk background menu aktif */
-            --btn-border: #E8D8CA;
-        }
+@extends('layouts.pos')
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            margin: 0;
-            overflow: hidden; 
-        }
+@section('title', 'Point of Sale - DariKopi')
 
-        /* ================= SIDEBAR ================= */
-        .sidebar {
-            width: 250px; 
-            background-color: var(--bg-sidebar);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 24px; 
-            z-index: 100;
-        }
+@push('styles')
+<style>
+/* Pos index specific styles */
+/* Hide scrollbar for aesthetics */
+.menu-area::-webkit-scrollbar { display: none; }
+.cart-items::-webkit-scrollbar { display: none; }
 
-        .brand {
-            margin-bottom: 0; /* Dikasih jarak lebih lega karena divider dihapus */
-        }
-        .brand-name {
-            font-size: 24px; 
-            font-weight: 800;
-            color: var(--primary-brown);
-            line-height: 1;
-            letter-spacing: -0.5px;
-        }
-        .brand-sub {
-            font-size: 12px;
-            color: var(--text-gray);
-            margin-top: 6px;
-            font-weight: 500;
-        }
+body { overflow: hidden; } /* Ensure it stays non-scrollable like the old design */
 
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: var(--text-gray);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px; 
-            transition: all 0.2s ease;
-            gap: 16px; 
-            position: relative; 
-        }
-        
-        .nav-item.active {
-            background-color: var(--active-bg);
-            color: var(--primary-brown);
-            padding-left: 24px; 
-        }
-        
-        .nav-item.active::before {
-            content: "";
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 18px;
-            width: 3px;
-            background-color: var(--primary-brown);
-            border-radius: 4px;
-        }
+/* ================= MAIN CONTENT ================= */
+.main-wrapper {
+    height: calc(100vh - 70px);
+}
 
-        .nav-item:hover:not(.active) {
-            background-color: #FAFAFA;
-            color: var(--primary-brown);
-        }
+/* --- KIRI: AREA MENU --- */
+.menu-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
 
-        /* Area Bawah: Profil & Keluar */
-        .sidebar-bottom {
-            margin-top: auto; /* Ini yang bikin box-nya kepaksa nempel ke bawah */
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+.page-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.page-header p {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 24px;
+}
 
-        /* ================= DIVIDER ================= */
-        .divider {
-            height: 1px;
-            background-color: var(--border-color); /* Warna garis ngikutin variabel border */
-            margin: 16px 0; /* Memberikan jarak vertikal */
-            width: 100%; /* Pastikan lebarnya full mengikuti wadah/container */
-        }
+/* Search & Filter */
+.search-filter-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 0 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+.filter-box {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    border: 1px solid transparent;
+}
+.filter-box:focus { border-color: var(--primary-brown); }
+.dropdown-menu-custom { padding: 8px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.dropdown-item-custom { border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-gray); padding: 8px 12px; transition: 0.2s; }
+.dropdown-item-custom:hover, .dropdown-item-custom.active { background-color: var(--active-bg); color: var(--primary-brown); }
 
-        .btn-logout {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start; /* Dirubah jadi rata kiri sesuai mockup */
-            gap: 12px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color); 
-            color: var(--primary-brown);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            background: white;
-            transition: all 0.2s ease;
-        }
-        .btn-logout:hover {
-            background: #FAFAFA;
-            border-color: var(--primary-brown);
-        }
+/* Category Pills */
+.category-pills {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.category-pills::-webkit-scrollbar { display: none; }
 
-        /* ================= NAVBAR TOP ================= */
-        .navbar-top {
-            position: fixed;
-            top: 0;
-            left: 250px; /* Lebar sidebar */
-            right: 0;
-            height: 70px;
-            background-color: var(--bg-sidebar);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            z-index: 99;
-        }
-        .navbar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0;
-        }
-        .time-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
+.pill {
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: white;
+    color: var(--text-gray);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    transition: 0.2s;
+    white-space: nowrap;
+}
+.pill.active {
+    background: var(--primary-brown);
+    color: white;
+}
 
-        /* ================= MAIN CONTENT ================= */
-        .main-wrapper {
-            margin-left: 250px;
-            margin-top: 70px;
-            height: calc(100vh - 70px);
-            display: flex;
-            padding: 32px;
-            gap: 24px;
-        }
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+.product-card {
+    background: white;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+.img-placeholder {
+    background-color: var(--active-bg);
+    border-radius: 12px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #CDBAB0;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.prod-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.prod-category {
+    font-size: 11px;
+    color: var(--text-gray);
+    margin-bottom: 12px;
+}
+.prod-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.prod-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-brown);
+}
+.btn-add {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--primary-brown);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
 
-        /* --- KIRI: AREA MENU --- */
-        .menu-area {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-        /* Hide scrollbar for aesthetics */
-        .menu-area::-webkit-scrollbar { display: none; }
+/* --- KANAN: AREA KERANJANG --- */
+.cart-sidebar {
+    width: 360px;
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    height: 100%;
+}
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.cart-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+.cart-subtitle {
+    font-size: 12px;
+    color: var(--text-gray);
+}
+.btn-empty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #FEF0F0;
+    color: #D9534F;
+    border: none;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .page-header p {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 24px;
-        }
+/* Cart Items */
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+.item-info {
+    flex: 1;
+}
+.item-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.item-price {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-gray);
+}
+.item-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.qty-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 4px;
+}
+.qty-num {
+    font-size: 13px;
+    font-weight: 600;
+}
+.btn-delete {
+    background: #FEF0F0;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D9534F;
+    cursor: pointer;
+    margin-left: 8px;
+}
 
-        /* Search & Filter */
-        .search-filter-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .search-box {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            background: white;
-            border-radius: 12px;
-            padding: 0 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .search-box input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 12px;
-            font-size: 13px;
-            color: var(--text-dark);
-        }
-        .filter-box {
-            background: white;
-            border-radius: 12px;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid transparent;
-        }
-        .filter-box:focus { border-color: var(--primary-brown); }
-        .dropdown-menu-custom { padding: 8px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .dropdown-item-custom { border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-gray); padding: 8px 12px; transition: 0.2s; }
-        .dropdown-item-custom:hover, .dropdown-item-custom.active { background-color: var(--active-bg); color: var(--primary-brown); }
+/* Tipe Penjualan Toggle */
+.order-type-box {
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 16px;
+}
+.order-type-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.order-type-toggle {
+    display: flex;
+    gap: 8px;
+}
+.type-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background: white;
+    color: var(--text-dark);
+}
+.type-btn.active {
+    background: var(--primary-brown);
+    color: white;
+    border-color: var(--primary-brown);
+}
 
-        /* Category Pills */
-        .category-pills {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .pill {
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            background: white;
-            color: var(--text-gray);
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            transition: 0.2s;
-        }
-        .pill.active {
-            background: var(--primary-brown);
-            color: white;
-        }
+/* Total & Pay */
+.summary-box {
+    margin-top: 24px;
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.summary-row.total {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+.btn-pay {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary-brown);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-pay:hover {
+    background: #734F37;
+}
 
-        /* Product Grid */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-        }
-        .img-placeholder {
-            background-color: var(--active-bg);
-            border-radius: 12px;
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #CDBAB0;
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .prod-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .prod-category {
-            font-size: 11px;
-            color: var(--text-gray);
-            margin-bottom: 12px;
-        }
-        .prod-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .prod-price {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary-brown);
-        }
-        .btn-add {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background-color: var(--primary-brown);
-            color: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        /* --- KANAN: AREA KERANJANG --- */
-        .cart-sidebar {
-            width: 360px;
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .cart-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-        }
-        .cart-subtitle {
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-        .btn-empty {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #FEF0F0;
-            color: #D9534F;
-            border: none;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Cart Items */
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-        }
-        .cart-items::-webkit-scrollbar { display: none; }
-        
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-        .item-info {
-            flex: 1;
-        }
-        .item-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .item-price {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-gray);
-        }
-        .item-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .qty-btn {
-            background: none;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-        .qty-num {
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .btn-delete {
-            background: #FEF0F0;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #D9534F;
-            cursor: pointer;
-            margin-left: 8px;
-        }
-
-        /* Tipe Penjualan Toggle */
-        .order-type-box {
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .order-type-title {
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .order-type-toggle {
-            display: flex;
-            gap: 8px;
-        }
-        .type-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            background: white;
-            color: var(--text-dark);
-        }
-        .type-btn.active {
-            background: var(--primary-brown);
-            color: white;
-            border-color: var(--primary-brown);
-        }
-
-        /* Total & Pay */
-        .summary-box {
-            margin-top: 24px;
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .summary-row.total {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 24px;
-        }
-        .btn-pay {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary-brown);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-pay:hover {
-            background: #734F37;
-        }
-
-        /* ================= STYLING KHUSUS MODAL ================= */
+/* ================= STYLING KHUSUS MODAL ================= */
 .btn-pay-modal {
     background: var(--primary-brown);
     color: white;
@@ -572,65 +404,29 @@
     box-shadow: none;
     outline: none;
 }
-    </style>
-</head>
-<body>
 
-    <!-- ================= SIDEBAR ================= -->
-    <div class="sidebar">
-        <div class="brand">
-            <div class="brand-name">DariKopi</div>
-            <div class="brand-sub">Point of Sales</div>
-        </div>
-        
-        <!-- Divider di bawah subtitle -->
-        <div class="divider"></div>
-        
-        <ul class="nav-menu">
-            <a href="{{ url('/pos') }}" class="nav-item active">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                Point of Sale
-            </a>
-            <a href="{{ route('pos.aktivitas') }}" class="nav-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Aktivitas
-            </a>
-            <a href="{{ route('pos.opname') }}" class="nav-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                Opname
-            </a>
-        </ul>
+/* Responsiveness overrides */
+@media (max-width: 991px) {
+    /* Menu Area is full width on mobile */
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+</style>
+@endpush
 
-        <div class="sidebar-bottom">
-            <!-- Divider di atas tombol logout -->
-            <div class="divider"></div>
-            
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-                <input type="hidden" name="source" value="pos">
-            </form>
-            <a href="#" class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Keluar
-            </a>
-        </div>
-    </div>
+@section('navbar_actions')
+    <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas" style="border-radius: 12px; border-color: var(--border-color); background: white;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary-brown)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="badge bg-danger rounded-pill cart-badge-count" style="font-size: 10px; margin-left: 4px;" id="cart-badge">0</span>
+    </button>
+@endsection
 
-    <!-- ================= NAVBAR TOP ================= -->
-    <div class="navbar-top">
-        <h1 class="navbar-title">Point of Sale</h1>
-        <div class="time-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span id="realtime-clock">08:15 WIB</span>
-        </div>
-    </div>
-
-    <!-- ================= MAIN CONTENT ================= -->
-    <div class="main-wrapper">
-        
-        <!-- --- KIRI: AREA MENU --- -->
-        <div class="menu-area">
-            <div class="page-header">
+@section('content')
+<div class="main-wrapper">
+    <!-- --- KIRI: AREA MENU --- -->
+    <div class="menu-area">
+<div class="page-header">
                 <h1>Point of Sale</h1>
                 <p>Pilih item untuk ditambahkan ke keranjang</p>
             </div>
@@ -699,9 +495,9 @@
 </div>
         </div>
 
-        <!-- --- KANAN: AREA KERANJANG --- -->
-        <div class="cart-sidebar">
-            
+    <!-- --- KANAN: AREA KERANJANG (Offcanvas di Mobile) --- -->
+    <div class="offcanvas-lg offcanvas-end border-0 p-0 m-0" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel" style="width: 360px; max-width: 100vw; background: transparent; box-shadow: none;">
+        <div class="cart-sidebar w-100 mx-auto" style="border-radius: 20px;">
             <div class="cart-header">
                 <div>
                     <h2 class="cart-title">Keranjang</h2>
@@ -784,11 +580,11 @@
                 </div>
                 <button class="btn-pay">Bayar Rp117.000</button>
             </div>
-
         </div>
     </div>
+</div>
 
-    <!-- ================= MODAL PEMBAYARAN ================= -->
+<!-- ================= MODAL PEMBAYARAN ================= -->
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 20px; border: none; padding: 24px;">
@@ -901,19 +697,8 @@
     </div>
 </div>
 
-    <!-- Script Jam Realtime -->
-    <script>
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('realtime-clock').textContent = `${hours}:${minutes} WIB`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock(); // Eksekusi pertama kali
-    </script>
-
-    <!-- Script Keranjang Belanja -->
+@push('scripts')
+<!-- Script Keranjang Belanja -->
 <script>
     // Inisialisasi array keranjang
     let cart = [];
@@ -1385,9 +1170,5 @@ document.querySelectorAll('.type-btn').forEach(btn => {
     });
 });
 </script>
-
-<!-- Bootstrap JS (Wajib untuk Modal) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+@endpush
+@endsection

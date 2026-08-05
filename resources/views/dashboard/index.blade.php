@@ -1,52 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - DariKopi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- ApexCharts JS -->
+@extends('layouts.backoffice')
+
+@section('title', 'Dashboard - DariKopi')
+@section('page_title', 'Dashboard')
+
+@push('styles')
+    <!-- ApexCharts JS (We need this early for rendering if needed, though usually at bottom is fine, but keeping logic same) -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- jQuery, Moment.js, & Daterangepicker -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
-    <style>
-        body { background-color: #F9F6F0; font-family: 'Poppins', sans-serif; color: #2b2d42; }
-        
-        /* ================= SIDEBAR (Sama Persis) ================= */
-        .sidebar { width: 240px; height: 100vh; background-color: #ffffff; border-right: 1px solid #EBE3DB; position: fixed; display: flex; flex-direction: column; padding: 24px 0; z-index: 100;}
-        .sidebar-brand { font-size: 24px; font-weight: 700; color: #8a5a36; padding: 0 24px; line-height: 1.2;}
-        .sidebar-subtitle { font-size: 11px; color: #94a3b8; padding: 0 24px; margin-bottom: 24px; }
-        .sidebar-divider { border-top: 1px solid #EBE3DB; margin: 0 24px 24px 24px; }
-        
-        .nav-menu { display: flex; flex-direction: column; gap: 16px; padding: 0 12px; }
-        .nav-menu a { display: flex; align-items: center; padding: 12px; color: #64748b; text-decoration: none; font-size: 15px; font-weight: 500; border-radius: 12px; transition: all 0.2s ease; position: relative; margin: 0 12px; }
-        .nav-menu a svg { flex-shrink: 0; margin-right: 12px; }
-        .nav-menu a:hover { color: #8a5a36; background-color: #faf7f5; }
-        
-        /* Dashboard yang aktif sekarang */
-        .nav-menu .active { background-color: #EBE1D7; color: #8a5a36; font-weight: 600; padding-left: 30px; }
-        .nav-menu .active::before { content: ""; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 4px; height: 24px; background-color: #8a5a36; border-radius: 10px; }
 
-        .user-card { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 16px; }
-        .user-name { font-size: 13px; font-weight: 700; color: #2b2d42; margin-bottom: 2px;}
-        .user-role { font-size: 11px; color: #94a3b8; }
-        
-        .btn-logout { display: flex; justify-content: left; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 12px; background: transparent; border: 1px solid #E8DDD2; color: #8a5a36; font-weight: 600; font-size: 15px; text-decoration: none; transition: 0.2s; }
-        .btn-logout:hover { background: #faf7f5; border-color: #8a5a36; color: #8a5a36; }
-        
-        /* ================= MAIN CONTENT ================= */
-        .main-content { margin-left: 240px; padding: 24px 32px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; padding: 20px 32px; margin: -24px -32px 32px -32px; border-bottom: 1px solid #EBE3DB; position: sticky; top: 0; z-index: 50; }
-        .topbar-title { font-size: 24px; font-weight: 700; color: #262626; margin: 0; }
-        .clock-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background-color: #ffffff; border: 1px solid #E8DDD2; border-radius: 12px; color: #262626; font-weight: 500; font-size: 14px; }
-        
+    <style>
         /* ================= KOMPONEN DASHBOARD ================= */
         .dash-card { background: #ffffff; border-radius: 16px; padding: 24px; border: 1px solid #EBE3DB; box-shadow: 0 4px 15px rgba(0,0,0,0.02); height: 100%; }
         .dash-title-sm { font-size: 13px; font-weight: 600; color: #2b2d42; margin-bottom: 12px; display: block; }
@@ -64,20 +30,20 @@
             display: inline-flex; 
             align-items: center;
             background: #ffffff; 
-            border: 1px solid #EBE3DB; /* Border dipindah ke wadah utama */
+            border: 1px solid #EBE3DB; 
             border-radius: 12px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            overflow: hidden; /* Biar efek hover tombol di ujung gak keluar jalur kotak */
+            overflow: hidden; 
         }
         .btn-date-custom { 
             background: transparent; 
-            border: none; /* Hilangin garis pisah antar tombol */
+            border: none; 
             color: #2b2d42; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             transition: 0.2s;
-            border-radius: 0; /* Reset bawaan bootstrap */
+            border-radius: 0; 
         }
         .btn-date-custom:hover { background: #faf7f5; color: #8a5a36; }
         .btn-date-custom:focus { outline: none; box-shadow: none; }
@@ -85,10 +51,10 @@
 
         /* Tabel Menu Terlaris */
         .table-menu-terlaris { width: 100%; margin-bottom: 0; }
-        .table-menu-terlaris th { background-color: #F4EFEA; color: #64748b; font-weight: 600; font-size: 13px; padding: 12px 16px; border: none; }
+        .table-menu-terlaris th { background-color: #F4EFEA; color: #64748b; font-weight: 600; font-size: 13px; padding: 12px 16px; border: none; white-space: nowrap; }
         .table-menu-terlaris th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
         .table-menu-terlaris th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-        .table-menu-terlaris td { font-size: 14px; font-weight: 600; color: #2b2d42; padding: 16px; border-bottom: 1px solid #f1f5f9; }
+        .table-menu-terlaris td { font-size: 14px; font-weight: 600; color: #2b2d42; padding: 16px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
         .table-menu-terlaris tr:last-child td { border-bottom: none; }
 
         /* ================= DATERANGEPICKER PREMIUM CUSTOM ================= */
@@ -103,7 +69,15 @@
             display: none;
         }
         
-        /* Panel Kiri (Pilihan Rentang Waktu) */
+        /* Responsive adjustments for Daterangepicker */
+        @media (max-width: 768px) {
+            .daterangepicker { padding: 10px !important; }
+            .daterangepicker .ranges { float: none !important; border-right: none !important; padding-right: 0; margin-bottom: 12px !important; }
+            .daterangepicker .ranges ul { width: 100% !important; display: flex; flex-wrap: wrap; gap: 4px; }
+            .daterangepicker .ranges li { margin-bottom: 4px !important; flex: 1 1 calc(50% - 4px); font-size: 11px !important;}
+            .daterangepicker .drp-calendar { padding: 0 !important; }
+        }
+
         .daterangepicker .ranges {
             float: left !important;
             padding-right: 20px;
@@ -134,7 +108,6 @@
             border-color: #8a5a36 !important;
         }
 
-        /* Kalender (Tengah) */
         .daterangepicker .drp-calendar { padding: 0 16px !important; }
         .daterangepicker .calendar-table {
             border: none !important;
@@ -152,7 +125,6 @@
         
         .daterangepicker th { color: #94a3b8 !important; font-weight: 500 !important; font-size: 12px !important; }
         
-        /* Sel Tanggal di Kalender */
         .daterangepicker td {
             width: 32px !important;
             height: 32px !important;
@@ -164,12 +136,12 @@
         .daterangepicker td.in-range {
             background-color: #F4EFEA !important;
             color: #8a5a36 !important;
-            border-radius: 0 !important; /* Kotak nyambung pas milih range */
+            border-radius: 0 !important;
         }
         .daterangepicker td.active, .daterangepicker td.active:hover {
             background-color: #8a5a36 !important;
             color: #ffffff !important;
-            border-radius: 6px !important; /* Bikin bulet/rounded pas di-klik */
+            border-radius: 6px !important;
             box-shadow: 0 2px 6px rgba(138, 90, 54, 0.3) !important;
         }
         .daterangepicker td.available:hover {
@@ -182,7 +154,6 @@
             font-weight: 400 !important;
         }
 
-        /* Panel Bawah (Tombol Apply & Cancel) */
         .daterangepicker .drp-buttons {
             border-top: 1px solid #EBE3DB !important;
             padding: 16px 0 0 0 !important;
@@ -190,13 +161,18 @@
             display: flex !important;
             align-items: center !important;
             justify-content: flex-end !important;
+            flex-wrap: wrap;
             gap: 12px;
+        }
+        @media (max-width: 768px) {
+            .daterangepicker .drp-selected { padding-left: 0 !important; width: 100%; text-align: center; margin-bottom: 8px; }
+            .daterangepicker .drp-buttons { justify-content: center !important; }
         }
         .daterangepicker .drp-selected {
             font-size: 13px !important;
             font-weight: 500 !important;
             color: #64748b !important;
-            margin-right: auto !important; /* Dorong teks ke kiri */
+            margin-right: auto !important;
             padding-left: 160px !important;
         }
         .daterangepicker .cancelBtn {
@@ -218,49 +194,9 @@
         }
         .daterangepicker .applyBtn:hover { background: #734a2c !important; }
     </style>
-</head>
-<body>
+@endpush
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <div>
-        <div class="sidebar-brand">DariKopi</div>
-        <div class="sidebar-subtitle">Back Office</div>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="nav-menu">
-        <a href="{{ route('dashboard.index') }}" class="active"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 17.5V10.8333C12.5 10.6123 12.4122 10.4004 12.2559 10.2441C12.0996 10.0878 11.8877 9.99999 11.6667 9.99999H8.33333C8.11232 9.99999 7.90036 10.0878 7.74408 10.2441C7.5878 10.4004 7.5 10.6123 7.5 10.8333V17.5M2.5 8.33333C2.49994 8.09088 2.55278 7.85135 2.65482 7.63142C2.75687 7.4115 2.90566 7.21649 3.09083 7.05999L8.92417 2.05999C9.22499 1.80575 9.60613 1.66626 10 1.66626C10.3939 1.66626 10.775 1.80575 11.0758 2.05999L16.9092 7.05999C17.0943 7.21649 17.2431 7.4115 17.3452 7.63142C17.4472 7.85135 17.5001 8.09088 17.5 8.33333V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V8.33333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard</a>
-        <a href="{{ route('menu.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 4.99992L16.6667 16.6666M9.99999 4.99992V16.6666M6.66666 6.66659V16.6666M3.33333 3.33325V16.6666" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Menu</a>
-        <a href="{{ route('bahan-baku.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 18.3334V10.0001M10 10.0001L2.74167 5.83341M10 10.0001L17.2583 5.83341M6.25 3.55841L13.75 7.85008M9.16667 18.1084C9.42003 18.2547 9.70744 18.3317 10 18.3317C10.2926 18.3317 10.58 18.2547 10.8333 18.1084L16.6667 14.7751C16.9198 14.6289 17.13 14.4188 17.2763 14.1658C17.4225 13.9127 17.4997 13.6257 17.5 13.3334V6.66675C17.4997 6.37448 17.4225 6.08742 17.2763 5.83438C17.13 5.58134 16.9198 5.37122 16.6667 5.22508L10.8333 1.89175C10.58 1.74547 10.2926 1.66846 10 1.66846C9.70744 1.66846 9.42003 1.74547 9.16667 1.89175L3.33333 5.22508C3.08022 5.37122 2.86998 5.58134 2.72372 5.83438C2.57745 6.08742 2.5003 6.37448 2.5 6.66675V13.3334C2.5003 13.6257 2.57745 13.9127 2.72372 14.1658C2.86998 14.4188 3.08022 14.6289 3.33333 14.7751L9.16667 18.1084Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Bahan Baku</a>
-        <a href="{{ route('laporan.index') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5M5.83333 13.3333H12.5M5.83333 9.16667H15.8333M5.83333 5H8.33333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Laporan</a>
-        <a href="{{ route('akun.index') }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Akun</a>
-    </div>
-    <div class="mt-auto px-4">
-        <div class="user-card"><div class="user-name">{{ auth()->user()->name }}</div></div>
-        <div style="border-top: 1px solid #EBE3DB; margin: 0 8px 16px 8px;"></div>
-        <!-- TOMBOL LOGOUT BARU -->
-        <a href="#" class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 5.83333L17.5 10L13.3333 14.1667M17.5 10H7.5M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Keluar
-        </a>
-
-        <!-- Form tersembunyi buat eksekusi POST Logout -->
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content">
-    <div class="topbar">
-        <h2 class="topbar-title">Dashboard</h2>
-        <div class="clock-badge">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8C5E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6V12L16 14" stroke="#8C5E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="realtime-clock">--:-- WIB</span>
-        </div>
-    </div>
-
+@section('content')
     <!-- Header & Welcome -->
     <div>
         <h1 class="fw-bold mb-1" style="color: #2b2d42; font-size: 32px;">Selamat Datang, {{ auth()->user()->name ?? 'Admin' }}</h1>
@@ -295,7 +231,7 @@
     <!-- 1. RINGKASAN PENJUALAN (4 Kotak Atas) -->
     <h4 class="section-title">Ringkasan Penjualan</h4>
     <div class="row g-4 mb-4">
-        <div class="col-md-3">
+        <div class="col-sm-6 col-xl-3">
             <div class="dash-card">
                 <span class="dash-title-sm">Pendapatan</span>
                 <div class="dash-value">Rp{{ number_format($pendapatan, 0, ',', '.') }}</div>
@@ -306,21 +242,21 @@
                 @endif
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-6 col-xl-3">
             <div class="dash-card">
                 <span class="dash-title-sm">Transaksi</span>
                 <div class="dash-value">{{ $jumlahTransaksi }}</div>
                 <span class="dash-subtext">Transaksi Selesai</span>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-6 col-xl-3">
             <div class="dash-card">
                 <span class="dash-title-sm">Menu Terjual</span>
                 <div class="dash-value">{{ $menuTerjual }}</div>
                 <span class="dash-subtext">Menu Periode Ini</span>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-6 col-xl-3">
             <div class="dash-card">
                 <span class="dash-title-sm">Menu Terlaris</span>
                 <div class="dash-value" style="font-size: 20px;">{{ $menuTerlaris }}</div>
@@ -331,13 +267,13 @@
 
     <!-- 2. GRAFIK UTAMA (Bar & Area) -->
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
+        <div class="col-xl-6">
             <div class="dash-card">
                 <span class="dash-title-sm">Jumlah Penjualan Harian Dalam Seminggu</span>
                 <div id="chart-mingguan"></div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xl-6">
             <div class="dash-card">
                 <span class="dash-title-sm">Jumlah Penjualan Per Jam</span>
                 <div id="chart-perjam"></div>
@@ -377,7 +313,7 @@
 
     <!-- 4. GRAFIK DONUT (Kategori) -->
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
+        <div class="col-xl-6">
             <div class="dash-card text-center relative">
                 <span class="dash-title-sm text-start">Kategori Berdasarkan Volume</span>
                 <div class="d-flex justify-content-center">
@@ -385,7 +321,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xl-6">
             <div class="dash-card text-center">
                 <span class="dash-title-sm text-start">Kategori Berdasarkan Penjualan</span>
                 <div class="d-flex justify-content-center">
@@ -398,7 +334,7 @@
     <!-- 5. GRAFIK BAR BAWAH (Top Menu Berdasarkan Kategori) -->
     <div class="dash-card">
         <span class="dash-title-sm">Top Menu Berdasarkan Kategori Terlaris</span>
-        <div class="row mt-4">
+        <div class="row mt-4 g-4">
             @forelse($topMenuPerKategori as $index => $item)
             <div class="col-md-4 text-center">
                 <span style="font-size: 13px; color: #64748b; font-weight: 500;">{{ $item['kategori'] }}</span>
@@ -411,20 +347,9 @@
         </div>
     </div>
 
-</div>
+@endsection
 
-<!-- Auto-Update Jam -->
-<script>
-    function updateClock() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('realtime-clock').textContent = `${hours}:${minutes} WIB`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
-
+@push('scripts')
 <!-- ================= KONFIGURASI APEXCHARTS ================= -->
 <script>
     // Palet Warna Sesuai Mockup
@@ -447,7 +372,7 @@
         plotOptions: { bar: { borderRadius: 2, columnWidth: '60%' } },
         dataLabels: { enabled: false },
         xaxis: { 
-            categories: labelMingguan, // Panggil dari gudang
+            categories: labelMingguan, 
             axisBorder: {show: false}, axisTicks: {show: false}, crosshairs: {show: false} 
         },
         yaxis: { labels: { formatter: function (val) { return val + "k" } } },
@@ -455,8 +380,6 @@
         tooltip: {
             custom: function({series, seriesIndex, dataPointIndex}) {
                 let val = series[seriesIndex][dataPointIndex];
-                
-                // AMBIL LANGSUNG DARI GUDANG (Pasti akurat)
                 let hari = labelMingguan[dataPointIndex]; 
                 let trans = transMingguan[dataPointIndex]; 
                 
@@ -492,7 +415,7 @@
         dataLabels: { enabled: false },
         stroke: { curve: 'straight', width: 0 },
         xaxis: { 
-            categories: labelPerJam, // Panggil dari gudang
+            categories: labelPerJam, 
             axisBorder: {show: false}, axisTicks: {show: false}, crosshairs: {show: false},
             labels: { style: { fontSize: '10px' } }
         },
@@ -501,8 +424,6 @@
         tooltip: {
             custom: function({series, seriesIndex, dataPointIndex}) {
                 let val = series[seriesIndex][dataPointIndex];
-                
-                // AMBIL LANGSUNG DARI GUDANG (Pasti akurat)
                 let jam = labelPerJam[dataPointIndex]; 
                 let trans = transPerJam[dataPointIndex];
                 
@@ -535,14 +456,12 @@
         colors: [colorBrown, colorYellow, colorGreen],
         plotOptions: { pie: { donut: { size: '30%' }, expandOnClick: false } },
         dataLabels: { enabled: true, formatter: function (val) { return val + "%" }, dropShadow: { enabled: false }, style: {colors: ['#fff']} },
-        legend: { position: 'top', horizontalAlign: 'right', fontSize: '11px', markers: { radius: 12 } },
+        legend: { position: 'bottom', horizontalAlign: 'center', fontSize: '11px', markers: { radius: 12 } },
         stroke: { width: 4, colors: ['#fff'] },
         tooltip: {
             y: {
                 formatter: function(val, opts) {
-                    // Ambil angka volume dari gudang dummy berdasarkan urutannya
                     let vol = volumeAsli[opts.seriesIndex];
-                    // Format jadi: 17 (63.2%)
                     return vol + " (" + val + "%)";
                 }
             }
@@ -562,14 +481,12 @@
         colors: [colorBrown, colorYellow, colorGreen],
         plotOptions: { pie: { donut: { size: '30%' }, expandOnClick: false } },
         dataLabels: { enabled: true, formatter: function (val) { return val + "%" }, dropShadow: { enabled: false } },
-        legend: { position: 'top', horizontalAlign: 'right', fontSize: '11px', markers: { radius: 12 } },
+        legend: { position: 'bottom', horizontalAlign: 'center', fontSize: '11px', markers: { radius: 12 } },
         stroke: { width: 4, colors: ['#fff'] },
         tooltip: {
             y: {
                 formatter: function(val, opts) {
-                    // Ambil angka Rupiah dari gudang dummy
                     let rp = pendapatanAsli[opts.seriesIndex];
-                    // Format jadi: Rp345.000 (68.2%)
                     return rp + " (" + val + "%)";
                 }
             }
@@ -592,7 +509,6 @@
         grid: { borderColor: '#f1f5f9', strokeDashArray: 0, position: 'back', xaxis: {lines: {show: false}}, yaxis: {lines: {show: false}} }
     };
 
-    // Render masing-masing bar chart kecil
     var topMenuData = @json($topMenuPerKategori);
     topMenuData.forEach(function(item, index) {
         new ApexCharts(document.querySelector("#chart-bar-kat" + index), { 
@@ -606,7 +522,6 @@
 <!-- ================= KONFIGURASI DATERANGEPICKER ================= -->
 <script>
     $(function() {
-        // Ambil waktu dari input tersembunyi
         var start = moment($('#start_date').val(), 'YYYY-MM-DD'); 
         var end = moment($('#end_date').val(), 'YYYY-MM-DD');
 
@@ -618,7 +533,6 @@
             $('#filterForm').submit();
         };
 
-        // Fungsi buat ngubah teks tanggal pas dipilih
         function updateDateText(start, end) {
             if(start.isSame(end, 'day')) {
                 $('#date-text').html(start.format('DD/MM/YYYY'));
@@ -627,24 +541,21 @@
             }
         }
 
-        // Settingan Pop-up Kalendernya
         $('#daterange-btn').daterangepicker({
             startDate: start,
             endDate: end,
-            opens: 'right',
+            opens: 'left', // Changed from right to left to not overflow on mobile
             drops: 'down',
-            alwaysShowCalendars: true, // <--- INI KUNCI BIAR KALENDER SELALU TAMPIL
+            alwaysShowCalendars: true,
             applyButtonClasses: 'btn-brown',
             ranges: {
                'Hari Ini': [moment(), moment()],
                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                'Minggu Ini': [moment().startOf('week'), moment().endOf('week')],
-               'Minggu Lalu': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-               'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-               'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+               'Bulan Ini': [moment().startOf('month'), moment().endOf('month')]
             },
             locale: {
-                customRangeLabel: 'Kustom Tanggal',
+                customRangeLabel: 'Kustom',
                 applyLabel: 'Terapkan',
                 cancelLabel: 'Batal',
                 daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
@@ -657,10 +568,7 @@
             $('#filterForm').submit();
         });
 
-        // Jalankan pas pertama kali load
         updateDateText(start, end);
     });
 </script>
-
-</body>
-</html>
+@endpush
