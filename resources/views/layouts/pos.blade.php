@@ -36,7 +36,7 @@
         /* ================= SIDEBAR (Responsive via Bootstrap Offcanvas) ================= */
         .sidebar {
             width: 250px; 
-            background-color: var(--bg-sidebar);
+            background-color: var(--bg-sidebar) !important;
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
