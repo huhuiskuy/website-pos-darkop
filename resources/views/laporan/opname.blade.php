@@ -12,7 +12,8 @@
 
     <style>
         /* ================= LAPORAN COMPONENTS ================= */
-        .top-tabs { border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 24px; padding-bottom: 0; margin-top: 32px; overflow-x: auto; white-space: nowrap;}
+        .top-tabs {  border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 24px; padding-bottom: 0; margin-top: 32px; overflow-x: auto; white-space: nowrap; overflow-y: hidden; scrollbar-width: none; }
+        .top-tabs::-webkit-scrollbar { display: none; }
         .top-tabs a { color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 14px; padding-bottom: 12px; position: relative; transition: 0.2s;}
         .top-tabs a:hover { color: #8a5a36; }
         .top-tabs a.active { color: #8a5a36; font-weight: 600; }

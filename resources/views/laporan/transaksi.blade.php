@@ -12,7 +12,8 @@
 
     <style>
         /* ================= LAPORAN COMPONENTS ================= */
-        .top-tabs { border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 32px; padding-bottom: 0; margin-top: 32px; overflow-x: auto; white-space: nowrap;}
+        .top-tabs {  border-bottom: 1px solid #EBE3DB; display: flex; gap: 32px; margin-bottom: 32px; padding-bottom: 0; margin-top: 32px; overflow-x: auto; white-space: nowrap; overflow-y: hidden; scrollbar-width: none; }
+        .top-tabs::-webkit-scrollbar { display: none; }
         .top-tabs a { color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 14px; padding-bottom: 12px; position: relative; transition: 0.2s;}
         .top-tabs a:hover { color: #8a5a36; }
         .top-tabs a.active { color: #8a5a36; font-weight: 600; }
@@ -38,10 +39,10 @@
         .clickable-row:hover { background-color: #faf7f5; }
 
         /* ================= DATE PICKER & SEARCH CUSTOM ================= */
-        .date-filter-group { display: inline-flex; align-items: center; background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; width: 100%; max-width: max-content; }
+        .date-filter-group { display: inline-flex; align-items: center; background: #ffffff; border: 1px solid #EBE3DB; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; max-width: max-content; }
         .btn-date-custom { background: transparent; border: none; color: #2b2d42; display: flex; align-items: center; justify-content: center; transition: 0.2s; border-radius: 0; flex-shrink: 0;}
         .btn-date-custom:hover { background: #faf7f5; color: #8a5a36; }
-        .btn-date-center { font-weight: 600; font-size: 14px; padding: 0 16px; width: 100%; justify-content: center;}
+        .btn-date-center { font-weight: 600; font-size: 14px; padding: 0 16px; justify-content: center;}
         
         #date-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;}
         
@@ -130,7 +131,7 @@
             </div>
 
             <!-- Date Picker -->
-            <div class="date-filter-group flex-grow-1">
+            <div class="date-filter-group">
                 <input type="hidden" name="start_date" id="start_date" value="{{ $startDate }}">
                 <input type="hidden" name="end_date" id="end_date" value="{{ $endDate }}">
                 
@@ -138,10 +139,7 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
                 <button type="button" class="btn btn-date-custom btn-date-center py-2 gap-2" id="daterange-btn">
-                    <span id="date-text">
-                        {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} 
-                        {{ $startDate != $endDate ? '- ' . \Carbon\Carbon::parse($endDate)->format('d/m/Y') : '' }}
-                    </span>
+                    <span id="date-text">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}{{ $startDate != $endDate ? ' - ' . \Carbon\Carbon::parse($endDate)->format('d/m/Y') : '' }}</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
                 <button type="button" class="btn btn-date-custom px-3 py-2" onclick="ubahPeriode(1)">
