@@ -148,7 +148,7 @@
         <div class="welcome-subtitle">Login Kasir POS — Silakan login untuk melanjutkan</div>
 
         <!-- Form Login tetep diarahkan ke auth controller yang sama -->
-        <form action="{{ route('login.admin.post') }}" method="POST">
+        <form action="{{ route('login.pos.post') }}" method="POST">
             @csrf
             
             <!-- INPUT HIDDEN: Ini ngasih tau backend kalo yang login ini mau ke POS -->
