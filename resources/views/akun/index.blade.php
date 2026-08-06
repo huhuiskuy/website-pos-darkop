@@ -61,7 +61,10 @@
 
     <!-- Container Grid untuk membatasi lebar form biar estetik kayak di mockup -->
     <div class="row">
-        <div class="col-lg-6 col-md-8">
+        
+        <!-- KOLOM KIRI: OWNER -->
+        <div class="col-lg-6 mb-4">
+            <h2 class="fw-bold mb-3" style="font-size: 20px; color: #2b2d42;">Pengaturan Owner</h2>
             
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px; font-size: 14px; font-weight: 500;">
@@ -89,11 +92,11 @@
                 <!-- Data Table -->
                 <div class="info-row">
                     <span class="info-label">Nama</span>
-                    <span class="info-value">{{ auth()->user()->name }}</span>
+                    <span class="info-value">{{ auth('owner')->user()->name }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Username</span>
-                    <span class="info-value">{{ auth()->user()->username }}</span>
+                    <span class="info-value">{{ auth('owner')->user()->username }}</span>
                 </div>
             </div>
 
@@ -155,6 +158,48 @@
                 </form>
             </div>
 
+
+        </div>
+
+        <!-- KOLOM KANAN: BARISTA -->
+        <div class="col-lg-6 mb-4">
+            <h2 class="fw-bold mb-3" style="font-size: 20px; color: #2b2d42;">Pengaturan Kasir (Barista)</h2>
+            
+            <div class="akun-card">
+                <h3 class="akun-card-title mb-1">Kredensial Barista</h3>
+                <p class="text-muted mb-4" style="font-size: 14px;">Ubah username dan password untuk akun yang digunakan di mesin kasir</p>
+                
+                <form action="{{ route('akun.barista.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label-custom">Username Barista</label>
+                        <input type="text" class="form-control-custom mb-1" name="barista_username" value="{{ $barista ? $barista->username : '' }}" required>
+                        @error('barista_username')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label class="form-label-custom">Password Baru Barista (Opsional)</label>
+                        <div class="input-group-custom">
+                            <input type="password" class="form-control-custom mb-1" id="baristaPasswordInput" placeholder="Kosongkan jika tidak ingin mengubah password" name="barista_password" style="padding-right: 48px;">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaPasswordInput', 'eyeIconBarista')">
+                                <svg id="eyeIconBarista" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        @error('barista_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    
+                    <button type="submit" class="btn btn-submit w-100">Simpan Perubahan Barista</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -172,14 +217,14 @@
                     <div class="modal-body" style="padding: 24px;">
                         <div class="form-group mb-3">
                             <label class="form-label-custom">Nama</label>
-                            <input type="text" class="form-control-custom mb-1" name="name" value="{{ auth()->user()->name }}" required>
+                            <input type="text" class="form-control-custom mb-1" name="name" value="{{ auth('owner')->user()->name }}" required>
                             @error('name')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label-custom">Username</label>
-                            <input type="text" class="form-control-custom mb-1" name="username" value="{{ auth()->user()->username }}" required>
+                            <input type="text" class="form-control-custom mb-1" name="username" value="{{ auth('owner')->user()->username }}" required>
                             @error('username')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror

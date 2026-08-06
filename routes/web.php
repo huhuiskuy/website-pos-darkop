@@ -19,15 +19,12 @@ use App\Http\Controllers\PosController;
 
 // Route pancingan bawaan auth Laravel
 Route::get('/login', function () {
-    // Cek rekam jejak URL tujuan awal sebelum ditendang
     $niatAwal = session()->get('url.intended', '');
     
-    // Kalau tujuan awalnya ada ke folder admin, lempar ke login admin
-    if (str_contains($niatAwal, '/admin')) {
+    if (str_contains($niatAwal, '/admin') || request()->is('admin*')) {
         return redirect()->route('login.admin');
     }
     
-    // Kalau bukan, defaultnya lempar ke login kasir POS
     return redirect()->route('login.pos');
 })->name('login');
 
@@ -52,7 +49,7 @@ Route::get('/login-pos', function () {
 Route::post('/login-pos', [AuthController::class, 'loginPos'])->name('login.pos.post');
 
 // Halaman Kasir (Wajib Login)
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:barista'])->group(function () {
     Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
     Route::post('/pos/checkout', [PosController::class, 'checkout'])->name('pos.checkout');
     
@@ -87,7 +84,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AuthController::class, 'loginAdmin'])->name('login.admin.post');
 
     // Halaman Back Office (Wajib Login)
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth:owner'])->group(function () {
         
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -116,6 +113,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
         Route::put('/akun/profile', [AkunController::class, 'updateProfile'])->name('akun.profile.update');
         Route::put('/akun/password', [AkunController::class, 'updatePassword'])->name('akun.password.update');
+        Route::put('/akun/barista', [AkunController::class, 'updateBarista'])->name('akun.barista.update');
     });
 
 });

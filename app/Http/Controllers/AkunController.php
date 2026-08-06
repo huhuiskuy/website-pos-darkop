@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class AkunController extends Controller
 {
     public function index()
     {
-        return view('akun.index');
+        $barista = User::where('role', 'barista')->first();
+        return view('akun.index', compact('barista'));
     }
 
     public function updateProfile(Request $request)
     {
-        $user = auth()->user();
+        $user = auth('owner')->user();
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -27,7 +29,7 @@ class AkunController extends Controller
             'username' => $request->username,
         ]);
 
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return back()->with('success', 'Profil owner berhasil diperbarui!');
     }
 
     public function updatePassword(Request $request)
@@ -40,7 +42,7 @@ class AkunController extends Controller
             'new_password.min' => 'Password baru minimal 8 karakter.'
         ]);
 
-        $user = auth()->user();
+        $user = auth('owner')->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
             throw ValidationException::withMessages([
@@ -52,6 +54,38 @@ class AkunController extends Controller
             'password' => Hash::make($request->new_password)
         ]);
 
-        return back()->with('success', 'Password berhasil diperbarui!');
+        return back()->with('success', 'Password owner berhasil diperbarui!');
+    }
+
+    public function updateBarista(Request $request)
+    {
+        $barista = User::where('role', 'barista')->first();
+        if (!$barista) {
+            return back()->with('error', 'Akun barista tidak ditemukan.');
+        }
+
+        $rules = [
+            'barista_username' => 'required|string|max:255|unique:users,username,' . $barista->id,
+        ];
+
+        if ($request->filled('barista_password')) {
+            $rules['barista_password'] = 'string|min:8';
+        }
+
+        $request->validate($rules, [
+            'barista_password.min' => 'Password barista minimal 8 karakter.'
+        ]);
+
+        $updateData = [
+            'username' => $request->barista_username,
+        ];
+
+        if ($request->filled('barista_password')) {
+            $updateData['password'] = Hash::make($request->barista_password);
+        }
+
+        $barista->update($updateData);
+
+        return back()->with('success', 'Akun barista berhasil diperbarui!');
     }
 }

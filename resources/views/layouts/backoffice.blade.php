@@ -133,7 +133,7 @@
         </a>
     </div>
     <div class="mt-auto px-4 mb-4">
-        <div class="user-card"><div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div></div>
+        <div class="user-card"><div class="user-name">{{ auth('owner')->user()->name ?? 'Admin' }}</div></div>
         <div style="border-top: 1px solid #EBE3DB; margin: 0 8px 16px 8px;"></div>
         <!-- TOMBOL LOGOUT BARU -->
         <a href="#" class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
