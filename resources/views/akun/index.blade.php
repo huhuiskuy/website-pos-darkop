@@ -176,10 +176,6 @@
                 
                 <!-- Data Table -->
                 <div class="info-row">
-                    <span class="info-label">Nama</span>
-                    <span class="info-value">{{ $barista ? $barista->name : '-' }}</span>
-                </div>
-                <div class="info-row">
                     <span class="info-label">Username</span>
                     <span class="info-value">{{ $barista ? $barista->username : '-' }}</span>
                 </div>
@@ -197,20 +193,49 @@
                     <!-- Username dikirim otomatis agar lolos validasi controller -->
                     <input type="hidden" name="barista_username" value="{{ $barista ? $barista->username : '' }}">
                     
-                    <div class="form-group mb-4">
-                        <label class="form-label-custom">Password Baru Barista</label>
+                    <div class="form-group mb-3">
+                        <label class="form-label-custom">Password Saat Ini</label>
                         <div class="input-group-custom">
-                            <input type="password" class="form-control-custom mb-1" id="baristaPasswordInput" placeholder="Masukkan password baru" name="barista_password" style="padding-right: 48px;" required>
-                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaPasswordInput', 'eyeIconBarista')">
-                                <svg id="eyeIconBarista" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <input type="password" class="form-control-custom mb-1" id="baristaCurrentPasswordInput" placeholder="Masukkan password saat ini" name="barista_current_password" style="padding-right: 48px;" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaCurrentPasswordInput', 'eyeIconBaristaCurrent')">
+                                <svg id="eyeIconBaristaCurrent" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
                             </button>
                         </div>
-                        @error('barista_password')
+                        @error('barista_current_password')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label-custom">Password Baru</label>
+                        <div class="input-group-custom">
+                            <input type="password" class="form-control-custom mb-1" id="baristaNewPasswordInput" placeholder="Masukkan password baru" name="barista_new_password" style="padding-right: 48px;" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaNewPasswordInput', 'eyeIconBaristaNew')">
+                                <svg id="eyeIconBaristaNew" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        @error('barista_new_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label class="form-label-custom">Konfirmasi Password Baru</label>
+                        <div class="input-group-custom">
+                            <input type="password" class="form-control-custom mb-1" id="baristaConfirmPasswordInput" placeholder="Ulangi password baru" name="barista_new_password_confirmation" style="padding-right: 48px;" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaConfirmPasswordInput', 'eyeIconBaristaConfirm')">
+                                <svg id="eyeIconBaristaConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-submit w-100">Ubah Password Barista</button>
@@ -239,7 +264,7 @@
                             @enderror
                         </div>
                         <!-- Password kosong agar diabaikan di controller -->
-                        <input type="hidden" name="barista_password" value="">
+                        <input type="hidden" name="barista_new_password" value="">
                     </div>
                     <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 16px 24px;">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 500;">Batal</button>
