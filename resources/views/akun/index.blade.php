@@ -165,26 +165,42 @@
         <div class="col-lg-6 mb-4">
             <h2 class="fw-bold mb-3" style="font-size: 20px; color: #2b2d42;">Pengaturan Kasir (Barista)</h2>
             
+            <!-- CARD 1: INFORMASI AKUN BARISTA -->
+            <div class="akun-card mb-4">
+                <h3 class="akun-card-title">Akun</h3>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="info-section-title">Informasi Akun</div>
+                    <a href="#" class="btn-edit" data-bs-toggle="modal" data-bs-target="#editBaristaModal">Edit</a>
+                </div>
+                
+                <!-- Data Table -->
+                <div class="info-row">
+                    <span class="info-label">Nama</span>
+                    <span class="info-value">{{ $barista ? $barista->name : '-' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Username</span>
+                    <span class="info-value">{{ $barista ? $barista->username : '-' }}</span>
+                </div>
+            </div>
+
+            <!-- CARD 2: UBAH PASSWORD BARISTA -->
             <div class="akun-card">
-                <h3 class="akun-card-title mb-1">Kredensial Barista</h3>
-                <p class="text-muted mb-4" style="font-size: 14px;">Ubah username dan password untuk akun yang digunakan di mesin kasir</p>
+                <h3 class="akun-card-title mb-1">Ubah Password</h3>
+                <p class="text-muted mb-4" style="font-size: 14px;">Pastikan password baru mudah diingat namun tetap aman</p>
                 
                 <form action="{{ route('akun.barista.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     
-                    <div class="form-group mb-3">
-                        <label class="form-label-custom">Username Barista</label>
-                        <input type="text" class="form-control-custom mb-1" name="barista_username" value="{{ $barista ? $barista->username : '' }}" required>
-                        @error('barista_username')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
+                    <!-- Username dikirim otomatis agar lolos validasi controller -->
+                    <input type="hidden" name="barista_username" value="{{ $barista ? $barista->username : '' }}">
                     
                     <div class="form-group mb-4">
-                        <label class="form-label-custom">Password Baru Barista (Opsional)</label>
+                        <label class="form-label-custom">Password Baru Barista</label>
                         <div class="input-group-custom">
-                            <input type="password" class="form-control-custom mb-1" id="baristaPasswordInput" placeholder="Kosongkan jika tidak ingin mengubah password" name="barista_password" style="padding-right: 48px;">
+                            <input type="password" class="form-control-custom mb-1" id="baristaPasswordInput" placeholder="Masukkan password baru" name="barista_password" style="padding-right: 48px;" required>
                             <button type="button" class="password-toggle" onclick="togglePasswordVisibility('baristaPasswordInput', 'eyeIconBarista')">
                                 <svg id="eyeIconBarista" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -197,7 +213,38 @@
                         @enderror
                     </div>
                     
-                    <button type="submit" class="btn btn-submit w-100">Simpan Perubahan Barista</button>
+                    <button type="submit" class="btn btn-submit w-100">Ubah Password Barista</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Barista -->
+    <div class="modal fade" id="editBaristaModal" tabindex="-1" aria-labelledby="editBaristaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px;">
+                    <h5 class="modal-title fw-bold" id="editBaristaModalLabel" style="color: #2b2d42;">Edit Username Barista</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('akun.barista.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body" style="padding: 24px;">
+                        <div class="form-group mb-3">
+                            <label class="form-label-custom">Username Barista</label>
+                            <input type="text" class="form-control-custom mb-1" name="barista_username" value="{{ $barista ? $barista->username : '' }}" required>
+                            @error('barista_username')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <!-- Password kosong agar diabaikan di controller -->
+                        <input type="hidden" name="barista_password" value="">
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 16px 24px;">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 500;">Batal</button>
+                        <button type="submit" class="btn btn-submit" style="margin-top: 0;">Simpan Perubahan</button>
+                    </div>
                 </form>
             </div>
         </div>
