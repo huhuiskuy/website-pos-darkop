@@ -30,6 +30,7 @@
             .sidebar {
                 position: fixed;
                 height: 100vh;
+                height: 100dvh; /* Fix untuk iOS Safari */
                 top: 0;
                 left: 0;
             }

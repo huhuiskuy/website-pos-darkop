@@ -14,6 +14,7 @@ body { overflow: hidden; } /* Ensure it stays non-scrollable like the old design
 /* ================= MAIN CONTENT ================= */
 .main-wrapper {
     height: calc(100vh - 70px);
+    height: calc(100dvh - 70px); /* Fix untuk iOS Safari yang memotong layar bawah */
 }
 
 /* --- KIRI: AREA MENU --- */
