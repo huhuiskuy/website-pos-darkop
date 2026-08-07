@@ -70,6 +70,9 @@ body { overflow: hidden; } /* Ensure it stays non-scrollable like the old design
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     border: 1px solid transparent;
+    color: var(--text-dark);
+    -webkit-appearance: none;
+    appearance: none;
 }
 .filter-box:focus { border-color: var(--primary-brown); }
 .dropdown-menu-custom { padding: 8px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -410,6 +413,10 @@ body { overflow: hidden; } /* Ensure it stays non-scrollable like the old design
     /* Menu Area is full width on mobile */
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    /* Hapus padding-right agar seimbang di mobile (karena gak ada scrollbar overflow yg nabrak) */
+    .menu-area {
+        padding-right: 0;
     }
 }
 </style>
