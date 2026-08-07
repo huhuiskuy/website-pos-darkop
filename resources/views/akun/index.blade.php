@@ -163,7 +163,7 @@
 
         <!-- KOLOM KANAN: BARISTA -->
         <div class="col-lg-6 mb-4">
-            <h2 class="fw-bold mb-3" style="font-size: 20px; color: #2b2d42;">Pengaturan Kasir (Barista)</h2>
+            <h2 class="fw-bold mb-3" style="font-size: 20px; color: #2b2d42;">Pengaturan Barista</h2>
             
             <!-- CARD 1: INFORMASI AKUN BARISTA -->
             <div class="akun-card mb-4">
