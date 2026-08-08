@@ -24,7 +24,11 @@ class AuthController extends Controller
 
         if (Auth::guard('owner')->attempt($credentials, true)) {
             $request->session()->regenerate();
-            return redirect()->intended('/admin'); 
+            $intended = session()->pull('url.intended', '/admin');
+            if (str_contains($intended, '/pos')) {
+                $intended = '/admin';
+            }
+            return redirect($intended); 
         }
 
         return back()->withErrors([
@@ -48,7 +52,11 @@ class AuthController extends Controller
 
         if (Auth::guard('barista')->attempt($credentials, true)) {
             $request->session()->regenerate();
-            return redirect()->intended('/pos'); 
+            $intended = session()->pull('url.intended', '/pos');
+            if (str_contains($intended, '/admin')) {
+                $intended = '/pos';
+            }
+            return redirect($intended); 
         }
 
         return back()->withErrors([
